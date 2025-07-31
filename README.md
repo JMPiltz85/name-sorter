@@ -11,7 +11,7 @@ A simple C# console application that sorts a list of names by Last Name, then Fi
 ASP.NET Core 8.0 with C#
 Xunit (for testing)
 
-### Prerequisites
+## Prerequisites
 - [.NET 8 SDK] ( https://dotnet.microsoft.com/download )
 - Optional: Visual Studio or VS Code
 
