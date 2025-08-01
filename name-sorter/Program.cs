@@ -14,12 +14,12 @@ class Program
         if (args.Length > 0)
             fileName = args[0];
 
-        TextFileReader reader = new TextFileReader();
-        TextFileWriter writer = new TextFileWriter();
-        NameParser parser = new NameParser();
-        NameSorter sorter = new NameSorter(parser);
-        NameDisplayer displayer = new NameDisplayer();
-        FolderFinder folderFinder = new FolderFinder();
+        TextFileReader reader = new TextFileReader(new ConsoleLogger());
+        TextFileWriter writer = new TextFileWriter(new ConsoleLogger());
+        NameParser parser = new NameParser( new ConsoleLogger());
+        NameSorter sorter = new NameSorter(parser, new ConsoleLogger());
+        NameDisplayer displayer = new NameDisplayer(new ConsoleLogger());
+        FolderFinder folderFinder = new FolderFinder(new ConsoleLogger());
 
         NameService service = new NameService(reader, writer, sorter, displayer, folderFinder);
          service.runService(fileName);

@@ -6,19 +6,42 @@ using System.Threading.Tasks;
 
 namespace name_sorter
 {
-    public class NameDisplayer
+    public class NameDisplayer: IDisplay
     {
+        private ILogger logger;
 
-        public NameDisplayer() { }
+        public NameDisplayer(ILogger _logger) 
+        { 
+            logger = _logger;
+        }
 
-        public void displayNames(List<string> nameList)
+        public void display(List<string> list)
         {
-
-            foreach (string name in nameList)
+            try
             {
-                Console.WriteLine(name);
+                if(list == null || list.Count <=0 )
+                {
+                    throw new ArgumentNullException("List of names cannot be empty");
+                }
+
+                foreach (string name in list)
+                {
+                    logger.logMessage(name);
+                }
             }
 
+            catch (ArgumentNullException ex)
+            {
+                logger.logError($"Argument Null Exeption has occurred: {ex.Message}");
+            }
+            catch (InvalidOperationException ex)
+            {
+                logger.logError($"Invalid Operation Exception has occured: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                logger.logMessage($"Unexpected error has occurred: {ex.Message}");
+            }
         }
     }
 }

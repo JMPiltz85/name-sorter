@@ -6,105 +6,95 @@ using System.Threading.Tasks;
 
 namespace name_sorter
 {
-    public class NameParser
+    public class NameParser: IParser
     {
+        private ILogger logger;
+
+        public NameParser(ILogger _logger)
+        {
+            logger = _logger;
+        }
 
         public string getFirstName(string fullName)
         {
-            string firstName = "";
+            string firstName = tryParse(fullName, (namesList) => namesList.FirstOrDefault() ?? "");
 
-            try
-            {
-                string[] nameList = fullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                if (nameList.Length > 0 && !string.IsNullOrEmpty(nameList[0]))
-                    firstName = nameList[0];
-                else
-                    firstName = "";
-            }
-
-            //NOTE: Catches when doing a split doesn't return any values (count of substrings is negative value)
-            catch (ArgumentOutOfRangeException ex)
-            {
-                Console.WriteLine($"Full Name String is invalid: {ex.Message}");
-            }
-            //NOTE: Handles when fullName has invalid characters, is empty, or only has whitespaces
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine($"Full Name String is invalid: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An unexpected error has occurred: {ex.Message}");
-            }
-
+            
             return firstName;
         }
 
         public string getLastName(string fullName)
         {
-            string lastName = "";
-
-            try
-            {
-                string[] nameList = fullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                if (nameList.Length > 0 && !string.IsNullOrEmpty(nameList[nameList.Length - 1]))
-                    lastName = nameList[nameList.Length - 1];
-                else
-                    lastName = "";
-            }
-
-            //NOTE: Catches when doing a split doesn't return any values (count of substrings is negative value)
-            catch (ArgumentOutOfRangeException ex)
-            {
-                Console.WriteLine($"Full Name String is invalid: {ex.Message}");
-            }
-            //NOTE: Handles when fullName has invalid characters, is empty, or only has whitespaces
-            catch (ArgumentException ex)
-            {
-                Console.WriteLine($"Full Name String is invalid: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"An unexpected error has occurred: {ex.Message}");
-            }
-
+            string lastName = tryParse(fullName, 
+                (namesList) => 
+                {
+                    if (namesList.Length > 1)
+                        return namesList.LastOrDefault() ?? "";
+                    else
+                        return "";
+                }
+            );
+            
             return lastName;
         }
 
         public string getMiddleNames(string fullName)
         {
-            string middleNames = "";
+            string middleNames = tryParse(fullName, 
+                (namesList) => 
+                {
+                    if (namesList.Length > 2)
+                        return string.Join(" ", namesList.Skip(1).Take(namesList.Length - 2));
+                    else
+                        return "";
+                }
+            );
+
+            return middleNames;
+        }
+
+        private string tryParse(string fullName, Func<string[], string> worker)
+        {
+            string name = "";
+
 
             try
             {
-                string[] nameList = fullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-
-                //NOTE: IF there's more than two entries in the split line, that means they have one or more middle names
-                if (nameList.Length > 0 && nameList.Length > 2 && !string.IsNullOrEmpty(nameList[nameList.Length - 1]))
-                    middleNames = string.Join(" ", nameList.Skip(1).Take(nameList.Length - 2));
+                if (string.IsNullOrWhiteSpace(fullName))
+                {
+                    throw new ArgumentNullException("The full name cannot be empty");
+                }
                 else
-                    middleNames = "";
+                {
+                    string[] nameList = fullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
 
+                    name = worker(nameList);
+                }
+            }
+
+            //NOTE: Catches when name is null or only contains whitespaces
+            catch (ArgumentNullException ex)
+            {
+                logger.logError($"Full Name String is invalid: {ex.Message}");
             }
 
             //NOTE: Catches when doing a split doesn't return any values (count of substrings is negative value)
             catch (ArgumentOutOfRangeException ex)
             {
-                Console.WriteLine($"Full Name String is invalid: {ex.Message}");
+                logger.logError($"Full Name String is invalid: {ex.Message}");
             }
             //NOTE: Handles when fullName has invalid characters, is empty, or only has whitespaces
             catch (ArgumentException ex)
             {
-                Console.WriteLine($"Full Name String is invalid: {ex.Message}");
+                logger.logError($"Full Name String is invalid: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An unexpected error has occurred: {ex.Message}");
+                logger.logError($"An unexpected error has occurred: {ex.Message}");
             }
 
-            return middleNames;
+
+            return name;
         }
 
 

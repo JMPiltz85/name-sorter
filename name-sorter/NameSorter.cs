@@ -6,30 +6,40 @@ using System.Threading.Tasks;
 
 namespace name_sorter
 {
-    public class NameSorter
+    public class NameSorter: ISorter
     {
-        private readonly NameParser parser;
+        private ILogger logger;
+        private IParser parser;
 
-        public NameSorter(NameParser _parser)
+        public NameSorter(IParser _parser, ILogger _logger)
         {
             parser = _parser;
+            logger = _logger;
         }
 
-        public List<string> sortNameList(List<string> nameList)
+        public List<string> sortList(List<string> list)
         {
             List<string> sortedNameList = new List<string>();
 
-            sortedNameList = nameList
-                .OrderBy(name => parser.getLastName(name))
-                .ThenBy(name => parser.getMiddleNames(name))
-                .ThenBy(name => parser.getFirstName(name))
-                .ToList();
+            try
+            {
+                sortedNameList = list
+                    .OrderBy(name => parser.getLastName(name))
+                    .ThenBy(name => parser.getMiddleNames(name))
+                    .ThenBy(name => parser.getFirstName(name))
+                    .ToList();
+
+            }
+
+            catch (Exception ex)
+            {
+                logger.logError($"An unexpected error has occurred: {ex.Message}");
+            }
 
 
             return sortedNameList;
 
         }
-
 
     }
 }

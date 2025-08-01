@@ -26,12 +26,12 @@ namespace name_sorter
 
         public void runService(string filePath)
         {
-            string? folderPath = folderFinder.getFolderPath(filePath);
+            string? folderPath = folderFinder.getPath(filePath);
             string writePath = folderPath + "\\sorted-names-list.txt";
             List<string> nameList = reader.ReadLines(filePath);
-            List<string> sortedNameList = sorter.sortNameList(nameList);
+            List<string> sortedNameList = sorter.sortList(nameList);
 
-            displayer.displayNames(sortedNameList);
+            displayer.display(sortedNameList);
 
             writer.WriteLines(writePath, sortedNameList);
 

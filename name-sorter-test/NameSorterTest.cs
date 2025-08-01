@@ -1,4 +1,5 @@
 using Microsoft.VisualBasic;
+using Moq;
 using name_sorter;
 using System;
 using System.Diagnostics.Metrics;
@@ -7,13 +8,20 @@ namespace name_sorter_test;
 
 public class NameSorterTest
 {
-    private name_sorter.NameParser parser = new name_sorter.NameParser();
-    private NameSorter sorter = null;
+    private ConsoleLogger logger;
+    private NameParser parser;
+    private NameSorter sorter;
+
+    public NameSorterTest()
+    {
+        logger = new ConsoleLogger();
+        parser = new name_sorter.NameParser(logger);
+        sorter = new NameSorter(parser, logger);
+    }
 
     [Fact]
     public void shouldSortByLastName()
     {
-        sorter = new NameSorter(parser);
 
         var unsortedList = new List<string>
             {
@@ -23,7 +31,7 @@ public class NameSorterTest
                 "Adam Lopez"
             };
 
-        var sortedList = sorter.sortNameList(unsortedList);
+        var sortedList = sorter.sortList(unsortedList);
 
         var expectedList = new List<string>
             {
@@ -40,8 +48,6 @@ public class NameSorterTest
     [Fact]
     public void shouldSortByFirstName()
     {
-        sorter = new NameSorter(parser);
-
         var unsortedList = new List<string>
             {
                 "Ryan Clarke",
@@ -50,7 +56,7 @@ public class NameSorterTest
                 "Samuel Clarke"
             };
 
-        var sortedList = sorter.sortNameList(unsortedList);
+        var sortedList = sorter.sortList(unsortedList);
 
         var expectedList = new List<string>
             {
@@ -66,8 +72,6 @@ public class NameSorterTest
     [Fact]
     public void shouldSortByMiddleName()
     {
-        sorter = new NameSorter(parser);
-
         var unsortedList = new List<string>
             {
                 "Ryan Nathan Clarke",
@@ -76,7 +80,7 @@ public class NameSorterTest
                 "Ryan Albert Drew Clarke"
             };
 
-        var sortedList = sorter.sortNameList(unsortedList);
+        var sortedList = sorter.sortList(unsortedList);
 
         var expectedList = new List<string>
             {
@@ -92,8 +96,6 @@ public class NameSorterTest
     [Fact]
     public void fullExampleTest()
     {
-        sorter = new NameSorter(parser);
-
         var unsortedList = new List<string>
             {
                 "Janet Parsons",
@@ -109,7 +111,7 @@ public class NameSorterTest
                 "Frankie Conner Ritter"
             };
 
-        var sortedList = sorter.sortNameList(unsortedList);
+        var sortedList = sorter.sortList(unsortedList);
 
         var expectedList = new List<string>
             {

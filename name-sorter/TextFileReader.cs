@@ -8,9 +8,12 @@ namespace name_sorter
 {
     public class TextFileReader:IFileReader
     {
+        private ILogger logger;
 
-
-        public TextFileReader() { }
+        public TextFileReader(ILogger _logger)
+        { 
+            logger = _logger;
+        }
 
         public List<string> ReadLines(string filePath)
         {
@@ -31,15 +34,15 @@ namespace name_sorter
 
             catch (FileNotFoundException ex)
             {
-                Console.WriteLine($"The specified file couldn't be found: {ex.Message}");
+                logger.logError($"The specified file couldn't be found: {ex.Message}");
             }
             catch (IOException ex)
             {
-                Console.WriteLine($"An I/O error has occurred: {ex.Message}");
+                logger.logError($"An I/O error has occurred: {ex.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An unexpected error has occurred: {ex.Message}");
+                logger.logError($"An unexpected error has occurred: {ex.Message}");
             }
 
             return nameList;
