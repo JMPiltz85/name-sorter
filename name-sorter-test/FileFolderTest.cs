@@ -16,6 +16,12 @@ public class FileFolderTest
         string? fileDir = finder.getPath(filePath);
 
         Assert.Equal(expectedDir, fileDir);
+
+        //NOTE: Makes sure no errors were logged
+        mockLogger.Verify(
+                logger => logger.logError(It.IsAny<string>())
+                , Times.Never
+        );
     }
 
     [Theory]

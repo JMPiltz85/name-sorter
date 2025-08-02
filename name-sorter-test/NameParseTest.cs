@@ -17,6 +17,9 @@ public class NameParserTest
 
         string firstName = parser.getFirstName(fullName);
         Assert.Equal(expected, firstName);
+
+        // NOTE: Checks to make sure no error logs were called
+        mockLogger.Verify(logger => logger.logError(It.IsAny<string>()), Times.Never);
     }
 
     [Theory]
@@ -29,6 +32,9 @@ public class NameParserTest
 
         string middleNames = parser.getMiddleNames(fullName);
         Assert.Equal(expected, middleNames);
+
+        // NOTE: Checks to make sure no error logs were called
+        mockLogger.Verify(logger => logger.logError(It.IsAny<string>()), Times.Never);
     }
 
     [Theory]
@@ -42,6 +48,9 @@ public class NameParserTest
 
         string lastName = parser.getLastName(fullName);
         Assert.Equal(expected, lastName);
+
+        // NOTE: Checks to make sure no error logs were called
+        mockLogger.Verify(logger => logger.logError(It.IsAny<string>()), Times.Never);
     }
 
     [Theory]
