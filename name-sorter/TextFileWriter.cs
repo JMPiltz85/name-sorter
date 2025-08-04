@@ -25,7 +25,7 @@ namespace name_sorter
                 }
 
 
-                using (StreamWriter sw = new StreamWriter(writePath))
+                using (StreamWriter sw = new StreamWriter(writePath, false))
                 {
                     foreach (string name in nameList)
                     {
@@ -38,21 +38,21 @@ namespace name_sorter
             //NOTE: Handles when path has invalid characters, is empty, or only has whitespaces
             catch (ArgumentException ex)
             {
-                logger.logError($"Incorrectly formatted file path: {ex.Message}");
+                logger.logError($"Text File Writer has experienced an Argument Exception: {ex.Message}");
             }
             //NOTE: Handles when path has more than 260 characters (the maximum length Windows supports for file paths)
             catch (PathTooLongException ex)
             {
-                logger.logError($"Path has exceeded system's maximum length: {ex.Message}");
+                logger.logError($"Text File Writer has experienced a Path Too Long Exception: {ex.Message}");
             }
             catch (IOException ex)
             {
-                logger.logError($"An I/O error has occurred: {ex.Message}");
+                logger.logError($"Text File Writer has experienced an I/O Exception: {ex.Message}");
             }
 
             catch (Exception ex)
             {
-                logger.logError($"An unexpected error has occurred: {ex.Message}");
+                logger.logError($"Text File Writer has experienced an unexpected exception: {ex.Message}");
             }
         }
 

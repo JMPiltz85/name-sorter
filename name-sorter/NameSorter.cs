@@ -42,11 +42,11 @@ namespace name_sorter
 
             catch (ArgumentNullException ex)
             {
-                logger.logError($"List of strings passed is invalid: {ex.Message}");
+                logger.logError($"Name Sorter has experienced an Argument Null Exception: {ex.Message}");
             }
             catch (Exception ex)
             {
-                logger.logError($"An unexpected error has occurred: {ex.Message}");
+                logger.logError($"Name Sorter has experienced asn unexpected exception: {ex.Message}");
             }
 
 

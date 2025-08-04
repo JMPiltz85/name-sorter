@@ -10,26 +10,30 @@ class Program
     {
         //string fileName = "D:\\Users\\Jonathan\\Documents\\Interview projects\\Dye & Durham\\unsorted-names-list.txt";
         string fileName = "";
+        ILogger logger = new ConsoleLogger();
 
         if (args.Length > 0)
             fileName = args[0];
 
-        TextFileReader reader = new TextFileReader(new ConsoleLogger());
-        TextFileWriter writer = new TextFileWriter(new ConsoleLogger());
-        NameParser parser = new NameParser( new ConsoleLogger());
-        NameSorter sorter = new NameSorter(parser, new ConsoleLogger());
-        NameDisplayer displayer = new NameDisplayer(new ConsoleLogger());
-        FolderFinder folderFinder = new FolderFinder(new ConsoleLogger());
+        NameService service = createNAmeService(logger);
 
-        NameService service = new NameService(reader, writer, sorter, displayer, folderFinder);
-         service.runService(fileName);
+
+        service.runService(fileName);
 
     } 
 
+    private static NameService createNAmeService(ILogger logger)
+    {
+        TextFileReader reader = new TextFileReader(logger);
+        TextFileWriter writer = new TextFileWriter(logger);
+        NameParser parser = new NameParser(logger);
+        NameSorter sorter = new NameSorter(parser, logger);
+        NameDisplayer displayer = new NameDisplayer(logger);
+        FolderFinder folderFinder = new FolderFinder(logger);
 
+        NameService service = new NameService(reader, writer, sorter, displayer, folderFinder, logger);
 
-   
-
-    
+        return service;
+    }
 
 }

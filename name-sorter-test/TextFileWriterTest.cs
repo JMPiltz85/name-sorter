@@ -63,7 +63,7 @@ public class TextFileWriterTest
 
         mockLogger.Verify(
            logger => logger.logError(It.Is<string>(
-               msg => msg.Contains("Incorrectly formatted file path")
+               msg => msg.Contains("Text File Writer has experienced an Argument Exception")
            ))
            , Times.Once
        );
@@ -91,7 +91,7 @@ public class TextFileWriterTest
 
         mockLogger.Verify(
            logger => logger.logError(It.Is<string>(
-               msg => msg.Contains("Path has exceeded system's maximum length")
+               msg => msg.Contains("Text File Writer has experienced a Path Too Long Exception")
            ))
            , Times.Once
        );
@@ -123,7 +123,7 @@ public class TextFileWriterTest
 
         mockLogger.Verify(
            logger => logger.logError(It.Is<string>(
-               msg => msg.Contains("An I/O error has occurred")
+               msg => msg.Contains("Text File Writer has experienced an I/O Exception")
            ))
            , Times.Once
        );

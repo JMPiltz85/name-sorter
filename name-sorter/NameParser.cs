@@ -75,22 +75,22 @@ namespace name_sorter
             //NOTE: Catches when name is null or only contains whitespaces
             catch (ArgumentNullException ex)
             {
-                logger.logError($"Full Name String is invalid: {ex.Message}");
+                logger.logError($"Name Parser has experienced an Argument Null Exception: {ex.Message}");
             }
 
             //NOTE: Catches when doing a split doesn't return any values (count of substrings is negative value)
             catch (ArgumentOutOfRangeException ex)
             {
-                logger.logError($"Full Name String is invalid: {ex.Message}");
+                logger.logError($"Name Parser has experienced an Argument Out Of Range Exception: {ex.Message}");
             }
             //NOTE: Handles when fullName has invalid characters, is empty, or only has whitespaces
             catch (ArgumentException ex)
             {
-                logger.logError($"Full Name String is invalid: {ex.Message}");
+                logger.logError($"Name Parser has experienced an Argument Exception: {ex.Message}");
             }
             catch (Exception ex)
             {
-                logger.logError($"An unexpected error has occurred: {ex.Message}");
+                logger.logError($"Name Parser has experienced an unexpected exception: {ex.Message}");
             }
 
 

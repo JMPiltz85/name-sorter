@@ -32,15 +32,15 @@ namespace name_sorter
 
             catch (ArgumentNullException ex)
             {
-                logger.logError($"Argument Null Exeption has occurred: {ex.Message}");
+                logger.logError($"Name Display has experienced an Argument Null Exeption: {ex.Message}");
             }
             catch (InvalidOperationException ex)
             {
-                logger.logError($"Invalid Operation Exception has occured: {ex.Message}");
+                logger.logError($"Name Display has experienced an Invalid Operation Exception: {ex.Message}");
             }
             catch (Exception ex)
             {
-                logger.logMessage($"Unexpected error has occurred: {ex.Message}");
+                logger.logMessage($"Name Display has experienced an unexpected exception: {ex.Message}");
             }
         }
     }

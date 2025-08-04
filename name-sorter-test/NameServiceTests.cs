@@ -14,12 +14,10 @@ public class NameServiceTests
         string sortedFilePath = Path.Combine(baseDir, "..", "..", "..", "Text", "sorted-names-list.txt");
         string folderPath = "";
         string expectedOutputPath = Path.Combine(baseDir, "..", "..", "..", "Text");
+        Mock<ILogger> mockLogger = new Mock<ILogger>();
 
-        var mockReader = new Mock<TextFileReader>(MockBehavior.Strict, new ConsoleLogger());
-        var mockWriter = new Mock<TextFileWriter>(MockBehavior.Strict, new ConsoleLogger());
-        var mockSorter = new Mock<NameSorter>(new NameParser(new ConsoleLogger()), new ConsoleLogger());
-        var mockDisplayer = new Mock<NameDisplayer>(MockBehavior.Strict, new ConsoleLogger());
-        var mockFolderFinder = new Mock<FolderFinder>(MockBehavior.Strict, new ConsoleLogger());
+
+        NameService service = createNameService(mockLogger.Object);
 
         List<string> unsortedNames = new List<string>();
         List<string> sortedNames = new List<string>();
@@ -38,22 +36,6 @@ public class NameServiceTests
                 "Shelby Nathan Yoder"
             };
 
-        NameService service = new NameService(
-            mockReader.Object, 
-            mockWriter.Object, 
-            mockSorter.Object, 
-            mockDisplayer.Object, 
-            mockFolderFinder.Object
-        );
-
-        //NOTE: Sets up Mocks so they return values to check
-        //mockFolderFinder.Setup(ff => ff.getPath(unsortedFilePath)).Returns(folderPath);
-        //mockReader.Setup(r => r.ReadLines(unsortedFilePath)).Returns(unsortedNames);
-        //mockSorter.Setup(s => s.sortList(unsortedNames)).Returns(sortedNames);
-        //mockDisplayer.Setup(d => d.display(sortedNames));
-        //mockWriter.Setup(w => w.WriteLines(expectedOutputPath, sortedNames));
-
-
         service.runService(unsortedFilePath);
 
 
@@ -61,51 +43,71 @@ public class NameServiceTests
         var writtenData = File.ReadAllLines(sortedFilePath);
 
         Assert.Equal(expectedSortedNameList, writtenData);
+
+        mockLogger.Verify(
+            logger => logger.logError(It.IsAny<string>())
+            , Times.Never
+        );
 
     }
 
+
     [Fact]
-    public void fullServiceProcess_SuccessfulWithEmptyList()
+    public void fullServiceProcess_HandlesInvalidFilePath()
     {
         string baseDir = AppContext.BaseDirectory;
-        string unsortedFilePath = Path.Combine(baseDir, "..", "..", "..", "Text", "empty.txt");
-        string sortedFilePath = Path.Combine(baseDir, "..", "..", "..", "Text", "sorted-names-list.txt");
-        string folderPath = "";
-        string expectedOutputPath = Path.Combine(baseDir, "..", "..", "..", "Text");
+        string unsortedFilePath = "asdklfnjkasdfnjsfn";
 
-        var mockReader = new Mock<TextFileReader>(MockBehavior.Strict, new ConsoleLogger());
-        var mockWriter = new Mock<TextFileWriter>(MockBehavior.Strict, new ConsoleLogger());
-        var mockSorter = new Mock<NameSorter>(new NameParser(new ConsoleLogger()), new ConsoleLogger());
-        var mockDisplayer = new Mock<NameDisplayer>(MockBehavior.Strict, new ConsoleLogger());
-        var mockFolderFinder = new Mock<FolderFinder>(MockBehavior.Strict, new ConsoleLogger());
+        Mock<ILogger> mockLogger = new Mock<ILogger>();
 
-        List<string> unsortedNames = new List<string>();
-        List<string> sortedNames = new List<string>();
-        List<string> expectedSortedNameList = new List<string>();
-
-        NameService service = new NameService(
-            mockReader.Object,
-            mockWriter.Object,
-            mockSorter.Object,
-            mockDisplayer.Object,
-            mockFolderFinder.Object
-        );
-
-        //NOTE: Sets up Mocks so they return values to check
-        //mockFolderFinder.Setup(ff => ff.getPath(unsortedFilePath)).Returns(folderPath);
-        //mockReader.Setup(r => r.ReadLines(unsortedFilePath)).Returns(unsortedNames);
-        //mockSorter.Setup(s => s.sortList(unsortedNames)).Returns(sortedNames);
-        //mockDisplayer.Setup(d => d.display(sortedNames));
-        //mockWriter.Setup(w => w.WriteLines(expectedOutputPath, sortedNames));
-
+        NameService service = createNameService(mockLogger.Object);
 
         service.runService(unsortedFilePath);
 
 
-        //NOTE: Does all of the verification that everything worked as expected.
-        var writtenData = File.ReadAllLines(sortedFilePath);
+        mockLogger.Verify(
+            logger => logger.logError(It.Is<string>(
+                msg => msg.Contains("Name Service has experienced an Invalid Operation Exception")
+            ))
+            , Times.Once
+        );
 
-        Assert.Equal(expectedSortedNameList, writtenData);
+    }
 
+
+    [Fact]
+    public void fullServiceProcess_HandlesEmptyFile()
+    {
+        string baseDir = AppContext.BaseDirectory;
+        string unsortedFilePath = Path.Combine(baseDir, "..", "..", "..", "Text", "empty.txt");
+
+        Mock<ILogger> mockLogger = new Mock<ILogger>();
+
+        NameService service = createNameService(mockLogger.Object);
+
+        service.runService(unsortedFilePath);
+
+
+        mockLogger.Verify(
+            logger => logger.logError(It.Is<string>(
+                msg => msg.Contains("Name Service has experienced an Invalid Operation Exception")
+            ))
+            , Times.Once
+        );
+
+    }
+
+    private static NameService createNameService(ILogger logger)
+    {
+        TextFileReader reader = new TextFileReader(logger);
+        TextFileWriter writer = new TextFileWriter(logger);
+        NameParser parser = new NameParser(logger);
+        NameSorter sorter = new NameSorter(parser, logger);
+        NameDisplayer displayer = new NameDisplayer(logger);
+        FolderFinder folderFinder = new FolderFinder(logger);
+
+        NameService service = new NameService(reader, writer, sorter, displayer, folderFinder, logger);
+
+        return service;
     }
 }

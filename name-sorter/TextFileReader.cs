@@ -34,15 +34,15 @@ namespace name_sorter
 
             catch (FileNotFoundException ex)
             {
-                logger.logError($"The specified file couldn't be found: {ex.Message}");
+                logger.logError($"Text File Reader has experienced a File Not Found Exception: {ex.Message}");
             }
             catch (IOException ex)
             {
-                logger.logError($"An I/O error has occurred: {ex.Message}");
+                logger.logError($"Text File Reader has experienced an I/O Exception: {ex.Message}");
             }
             catch (Exception ex)
             {
-                logger.logError($"An unexpected error has occurred: {ex.Message}");
+                logger.logError($"Text File Reader has experienced an unexpected exception: {ex.Message}");
             }
 
             return nameList;

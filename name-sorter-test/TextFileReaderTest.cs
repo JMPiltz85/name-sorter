@@ -80,7 +80,7 @@ public class TextFileReaderTest
 
         mockLogger.Verify(
             logger => logger.logError(It.Is<string>(
-                msg => msg.Contains("The specified file couldn't be found")
+                msg => msg.Contains("Text File Reader has experienced a File Not Found Exception")
             ))
             , Times.Once
         );
@@ -109,7 +109,7 @@ public class TextFileReaderTest
 
         mockLogger.Verify(
             logger => logger.logError(It.Is<string>(
-                msg => msg.Contains("An I/O error has occurred")
+                msg => msg.Contains("Text File Reader has experienced an I/O Exception")
             ))
             , Times.Once
         );
